@@ -1,0 +1,10 @@
+#!/bin/bash
+
+for file in $(ls /launch.d); do
+cat << EOF >> /etc/supervisor/supervisord.conf
+[program:$file]
+command=$(cat /launch.d/$file)
+EOF
+done
+
+/usr/bin/supervisord -c /etc/supervisor/supervisord.conf

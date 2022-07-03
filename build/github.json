@@ -1,0 +1,38 @@
+{
+    "name": "base",
+    "type": "img",
+    "build_in": "github",
+    "clear_build_path": true,
+    "next":
+    [
+        {
+            "build": "docker",
+            "run_when": [
+                "release"
+            ],
+            "copy" : [
+              {"../../launch" : "launch"}
+            ],
+            "config":
+            {
+                "base_image": "ubuntu",
+                "image_name": "eons/img_base",
+                "image_os": "debian",
+                "install":
+                [
+                    "supervisor"
+                ],
+                "also" : [
+                    "RUN mkdir /launch.d",
+                    "RUN mkdir -p /var/log/supervisor",
+                    "COPY launch /launch",
+                    "RUN chmod +x /launch"
+                ],
+                "entrypoint" : "/launch",
+                "tags" : [
+                    "latest"
+                ]
+            }
+        }
+    ]
+}
