@@ -30,3 +30,14 @@ command=$(cat /launch.d/$file)
 This means you can add other Supervisor configs on newlines below the command (though this is untested).
 
 We really want to try not to reinvent the wheel nor revisit old grudges. While developing this, we will do our best to keep in mind the goals and history of [init freedom](https://www.devuan.org/os/init-freedom).
+
+### EBBS Docker Launch Directive
+
+To take advantage of our Supervisor init system in [EBBS](https://github.com/eons-dev/bin_ebbs), specify `launch` in the build json for your docker build step.
+See the [EBBS Docker Builder](https://github.com/eons-dev/build_docker) for more info.
+
+### EMI
+
+[EMI](https://github.com/eons-dev/bin_emi) is the eons package manager. Since we intend to use emi in all of our projects, it is best included here. As with everything we do, emi is configurable and modular, so you can make it work for you: the way you want.
+
+Unfortunately, EMI is currently built in python (as is the rest of our E___ products). Once [Biology](https://develop.bio) is stable, we will rewrite emi to remove the python dependency in this base image.
