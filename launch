@@ -8,3 +8,4 @@ EOF
 done
 
 /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
+tail -f /var/log/supervisor/*
