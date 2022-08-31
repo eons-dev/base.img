@@ -7,7 +7,7 @@
     [
         {
             "build": "docker",
-            "run_when": [
+            "run_when_any": [
                 "release"
             ],
             "copy" : [
