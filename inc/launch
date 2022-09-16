@@ -1,0 +1,24 @@
+#!/bin/bash
+
+mkdir -p /etc/supervisor
+mkdir -p /var/log/supervisor
+
+cat << EOF > /etc/supervisor/supervisord.conf
+[supervisord]
+nodaemon=true
+user=root
+logfile = /var/log/supervisor/supervisord.log
+logfile_maxbytes = 50MB
+logfile_backups=10
+loglevel = info
+EOF
+
+for file in $(ls /launch.d); do
+cat << EOF >> /etc/supervisor/supervisord.conf
+[program:$file]
+command=$(cat /launch.d/$file)
+EOF
+done
+
+/usr/bin/supervisord -c /etc/supervisor/supervisord.conf
+tail -f /var/log/supervisor/*

@@ -1,6 +1,6 @@
 {
-  "name": "eons",
-  "type": "lib",
+  "name": "base",
+  "type": "img",
   "clear_build_path" : true,
   "build_in" : "tmp",
   "next": [
@@ -11,11 +11,7 @@
       "build" : "proxy",
       "build_in" : "local",
       "copy" : [
-        {"../../src/" : "local/src/"},
-        {"../../inc/" : "local/inc/"},
-        {"../../test/" : "local/test/"},
-        {"../../README.md" : "local/README.md"},
-        {"../../LICENSE" : "local/LICENSE"}
+        {"../../inc/" : "local/"}
       ],
       "config" : {
         "clear_build_path" : false,

@@ -1,41 +1,41 @@
 {
-    "name": "base",
-    "type": "img",
-    "build_in": "github",
-    "clear_build_path": true,
-    "next":
-    [
-        {
-            "build": "docker",
-            "run_when_any": [
-                "release"
+  "next": [
+    {
+      "run_when_any" : [
+        "push",
+        "pull_request",
+        "release"
+      ],
+      "build" : "proxy",
+      "build_in" : "img_base",
+      "config" : {
+        "clear_build_path" : false,
+        "proxy" : "../../config/local.json",
+        "next" : [
+          {
+            "run_when_any" : [
+              "release"
             ],
-            "copy" : [
-              {"../../launch" : "launch"}
-            ],
-            "config":
-            {
-                "base_image": "ubuntu",
-                "image_name": "eons/img_base",
-                "image_os": "debian",
-                "install":
-                [
-                    "supervisor",
-                    "python3",
-                    "python3-pip"
-                ],
-                "also" : [
-                    "RUN mkdir /launch.d",
-                    "RUN mkdir -p /var/log/supervisor",
-                    "COPY launch /launch",
-                    "RUN chmod +x /launch",
-                    "RUN pip install emi"
-                ],
-                "entrypoint" : "/launch",
-                "tags" : [
-                    "latest"
-                ]
+            "build" : "docker_publish",
+            "build_in" : "./",
+            "config" : {
+              "image_name": "eons/img_base",
+              "clear_build_path" : false
             }
-        }
-    ]
+          }
+        ]
+      }
+    },
+    {
+      "run_when_any" : [
+        "schedule"
+      ],
+      "build" : "proxy",
+      "build_in" : "./",
+      "config" : {
+        "clear_build_path" : false,
+        "proxy" : "../../config/schedule.json"
+      }
+    }
+  ]
 }
