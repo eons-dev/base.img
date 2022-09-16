@@ -18,7 +18,9 @@
             ],
             "build" : "docker_publish",
             "build_in" : "./",
-            "config" : {}
+            "config" : {
+              "image_name": "eons/img_base"
+            }
           }
         ]
       }
