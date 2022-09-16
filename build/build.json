@@ -1,6 +1,7 @@
 {
   "name": "base",
   "type": "img",
+  "image_name": "eons/img_base",
   "clear_build_path" : true,
   "build_in" : "tmp",
   "next": [
@@ -24,6 +25,9 @@
       ],
       "build" : "proxy",
       "build_in" : "github",
+      "copy" : [
+        {"../../inc/" : "github/image"}
+      ],
       "config" : {
         "clear_build_path" : false,
         "proxy" : "../config/github.json"

@@ -5,9 +5,6 @@
     [
         {
             "build": "docker",
-            "copy" : [
-              {"../../../inc/launch" : "launch"}
-            ],
             "config":
             {
                 "base_image": "alpine",

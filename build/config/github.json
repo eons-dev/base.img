@@ -7,7 +7,7 @@
         "release"
       ],
       "build" : "proxy",
-      "build_in" : "img_base",
+      "build_in" : "image",
       "config" : {
         "clear_build_path" : false,
         "proxy" : "../../config/local.json",
@@ -18,10 +18,7 @@
             ],
             "build" : "docker_publish",
             "build_in" : "./",
-            "config" : {
-              "image_name": "eons/img_base",
-              "clear_build_path" : false
-            }
+            "config" : {}
           }
         ]
       }
