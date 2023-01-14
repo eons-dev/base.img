@@ -1,7 +1,7 @@
 {
   "name": "base",
   "type": "img",
-  "image_name": "eons/img_base",
+  "image_name": "eons/base.img",
   "clear_build_path" : true,
   "build_in" : "tmp",
   "next": [

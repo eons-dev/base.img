@@ -8,7 +8,7 @@
             "config":
             {
                 "base_image": "alpine",
-                "image_name": "eons/img_base",
+                "image_name": "eons/base.img",
                 "image_os": "alpine",
                 "install":
                 [
