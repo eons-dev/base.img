@@ -1,10 +1,11 @@
 {
-    "build_in": "github",
-    "clear_build_path": true,
+    "build_in": "local",
+    "clear_build_path": false,
     "next":
     [
         {
             "build": "docker",
+            "build_in": "docker",
             "config":
             {
                 "base_image": "alpine",

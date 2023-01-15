@@ -7,7 +7,7 @@
         "release"
       ],
       "build" : "proxy",
-      "build_in" : "image",
+      "build_in" : "local",
       "config" : {
         "clear_build_path" : false,
         "proxy" : "../../config/local.json",
