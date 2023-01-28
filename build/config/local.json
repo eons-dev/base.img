@@ -24,7 +24,7 @@
                     "RUN mkdir /launch.d; mkdir -p /var/log/supervisor",
                     "COPY launch /launch",
                     "RUN chmod +x /launch",
-                    "RUN pip install wheel; pip install emi",
+                    "RUN pip install wheel; pip install emi"
                 ],
                 "entrypoint" : "/launch",
                 "tags" : [
