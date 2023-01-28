@@ -1,6 +1,15 @@
 # Base Image
 This Docker image provides all standard utilities used in other eons and downstream images.
 
+## Big
+
+This image is big. It includes pip and other utilities that make development easy. You'll likely want to strip these when shipping your image to production.
+
+For example, add to your dockerfile or ebbs script:
+```
+RUN apk del build-base py3-pip python3-dev
+```
+
 ## Utilities
 
 ### Supervisor

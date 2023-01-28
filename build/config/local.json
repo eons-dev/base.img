@@ -25,7 +25,6 @@
                     "COPY launch /launch",
                     "RUN chmod +x /launch",
                     "RUN pip install wheel; pip install emi",
-                    "RUN apk del build-base py3-pip python3-dev"
                 ],
                 "entrypoint" : "/launch",
                 "tags" : [
