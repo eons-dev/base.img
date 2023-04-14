@@ -1,0 +1,30 @@
+build_in: local
+clear_build_path: false
+next:
+- build: docker
+	build_in: docker
+	config:
+		base_image: alpine
+		image_name: eons/base.img
+		image_os: alpine
+		install:
+			bash
+			supervisor
+			python3
+			python3-dev
+			py3-pip
+			build-base
+		also:
+			RUN mkdir /launch.d; mkdir -p /var/log/supervisor
+			COPY launch /launch
+			RUN chmod +x /launch
+			RUN pip install wheel; pip install emi; pip install supervisor-stdout
+		entrypoint: /launch
+		tags: 
+			latest
+- build: docker_publish
+	run_when_any:
+	- release
+	build_in: docker
+	config:
+		image_name: eons/base.img
