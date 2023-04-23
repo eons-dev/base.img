@@ -4,20 +4,28 @@ next:
 - build: docker
 	build_in: docker
 	copy:
-	- /inc/launch: launch
+	- /inc: ./
 	config:
 		base_image: alpine
 		image_name: eons/base.img
 		image_os: alpine
 		install:
 		- bash
-		- supervisor
+		- util-linux
+		- openrc
 		- python3
 		- python3-dev
 		- py3-pip
 		- build-base
 		also:
-		- RUN mkdir /launch.d; mkdir -p /var/log/supervisor
+		- VOLUME /sys/fs/cgroup
+		- RUN mkdir /launch.d
+		- RUN mkdir -p /root/.eons/cache
+		- RUN mkdir /var/log
+		- ENV REPO_STORE=/root/.eons/cache
+		- ENV VERBOSITY=5
+		- ADD eons /eons
+		- ADD sbin /sbin
 		- COPY launch /launch
 		- RUN chmod +x /launch
 		- RUN pip install wheel; pip install emi
