@@ -11,20 +11,16 @@ logfile = /var/log/supervisor/supervisord.log
 logfile_maxbytes = 50MB
 logfile_backups=10
 loglevel = info
-
-[eventlistener:stdout] 
-command = supervisor_stdout 
-buffer_size = 100 
-events = PROCESS_LOG 
-result_handler = supervisor_stdout:event_handler
 EOF
 
 for file in $(ls /launch.d); do
 cat << EOF >> /etc/supervisor/supervisord.conf
 [program:$file]
 command=$(cat /launch.d/$file)
-stdout_events_enabled=true
-stderr_events_enabled=true
+stderr_logfile=/var/log/supervisor/$file.err.log
+stdout_logfile=/var/log/supervisor/$file.out.log
+startsecs=0
+autorestart=false
 EOF
 done
 
