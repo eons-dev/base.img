@@ -1,5 +1,6 @@
 import eons
 import os
+from pathlib import Path
 
 class initsvc(eons.StandardFunctor):
 	def __init__(this, name="Initialize Services"):
@@ -29,17 +30,19 @@ class initsvc(eons.StandardFunctor):
 			"error_log": f"/var/log/{name}.err.log",
 		}
 		
-		serviceFile = this.CreateFile(f"/etc/init.d/{name}")
+		serviceFilePath = f"/etc/init.d/{name}"
+		serviceFile = this.CreateFile(serviceFilePath)
 		serviceFile.write(f"#!/sbin/openrc-run\n")
-		for key, value in kvs:
+		for key, value in kvs.items():
 			serviceFile.write(f"{key}=\"{value}\"\n")
 
 		if (len(dependencies)):
-			serviceFile.write(f'''depend() {{
-{"".join([f"    after {dep}\n" for dep in dependencies])}
-}}
-'''
+			serviceFile.write("depend() {")
+			serviceFile.write("".join([f"\tafter {dep}\n" for dep in dependencies]))
+			serviceFile.write("}\n")
+
 		serviceFile.close()
+		Path(serviceFilePath).chmod(0o755)
 
 	
 	def Function(this):

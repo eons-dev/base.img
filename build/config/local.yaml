@@ -1,10 +1,12 @@
 build_in: local
+type: img
+name: base
 clear_build_path: false
 next:
 - build: docker
 	build_in: docker
 	copy:
-	- /inc: ./
+	- /inc: inc/
 	config:
 		base_image: alpine
 		image_name: eons/base.img
@@ -21,12 +23,9 @@ next:
 		- VOLUME /sys/fs/cgroup
 		- RUN mkdir /launch.d
 		- RUN mkdir -p /root/.eons/cache
-		- RUN mkdir /var/log
-		- ENV REPO_STORE=/root/.eons/cache
-		- ENV VERBOSITY=5
-		- ADD eons /eons
-		- ADD sbin /sbin
-		- COPY launch /launch
+		- ADD inc/eons /eons
+		- ADD inc/sbin /sbin
+		- COPY inc/launch /launch
 		- RUN chmod +x /launch
 		- RUN pip install wheel; pip install emi
 		entrypoint: /launch
@@ -35,6 +34,6 @@ next:
 - build: docker_publish
 	run_when_any:
 	- release
-	build_in: docker
+	build_in: publish
 	config:
 		image_name: eons/base.img
