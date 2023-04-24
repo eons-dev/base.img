@@ -1,5 +1,7 @@
 import eons
 import os
+import time
+import logging
 from pathlib import Path
 
 class initsvc(eons.StandardFunctor):
@@ -9,6 +11,16 @@ class initsvc(eons.StandardFunctor):
 		this.functionSucceeded = True
 		this.enableRollback = False
 
+		this.optionalKWArgs["retry_count"] = 10
+		this.optionalKWArgs["retry_wait"] = 1
+
+
+	def GetServiceNameFromFileName(this, file):
+		fileSplit = file.split("_")
+		if (len(fileSplit) > 1 and fileSplit[0].isnumeric()):
+			file = "_".join(fileSplit[1:])
+		return file
+
 
 	def WriteRCConf(this):
 		rcconf = this.CreateFile("/etc/rc.conf")
@@ -16,12 +28,19 @@ class initsvc(eons.StandardFunctor):
 
 
 	def WriteRCService(this, name, command, dependencies=[]):
-		command_name = command.split(" ")[0]
-		command_args = " ".join(command.split(" ")[1:])
+		# command_name = command.split(" ")[0]
+		# command_args = " ".join(command.split(" ")[1:])
+		command_args = command
+		if (command_args.endswith('\n')):
+			command_args = command_args[:-1]
+
+		command_args.replace('"', '\\"')
+		command_args.replace("'", "\\'")
+		command_args = f"-c '{command_args}; echo $? > /var/run/{name}.exitcode'"
 
 		kvs = {
 			"name": name,
-			"command": command_name,
+			"command": "/bin/bash",
 			"command_args": command_args,
 			"command_user": "root:root",
 			"command_background": "true",
@@ -54,12 +73,36 @@ class initsvc(eons.StandardFunctor):
 			with open(f"/launch.d/{file}", "r") as f:
 				if (i):
 					dependencies.append(launchFiles[i-1])
-				this.WriteRCService(file, f.read(), dependencies=dependencies)
+				this.WriteRCService(this.GetServiceNameFromFileName(file), f.read(), dependencies=dependencies)
 		
 		# maybe necessary?
 		# https://github.com/gliderlabs/docker-alpine/issues/437#issuecomment-667456518
 		this.RunCommand("rc-status")
 
 		for file in launchFiles:
-			this.RunCommand(f"rc-service {file} start")
+			service = this.GetServiceNameFromFileName(file)
+			this.RunCommand(f"rc-service {service} start")
+			code = -1
+			attempts = 1
+			while code != 0:
+				possibleExitCodeFile = f"/var/run/{service}.exitcode"
+				if (os.path.exists(possibleExitCodeFile)):
+					with open(possibleExitCodeFile, "r") as f:
+						code = int(f.read())
+				else:
+					code = this.RunCommand(f"rc-service {service} status", raiseExceptions=False)
+				
+				if (code != 0):
+					logging.debug(f"Waiting for {service} to start...")
+					time.sleep(this.retry_wait)
+				attempts += 1
+				if (attempts >= this.retry_count):
+					errorFile = f"/var/log/{service}.err.log"
+					error = ""
+					if (os.path.exists(errorFile)):
+						with open(errorFile, "r") as f:
+							error = f.read()
+					raise Exception(f"Failed to start {service} after {attempts} attempts. Errors (if any): {error}")
+
+
 
