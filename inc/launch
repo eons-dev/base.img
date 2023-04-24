@@ -1,7 +1,4 @@
 #!/bin/bash
-export REPO_STORE=/root/.eons/cache
-export VERBOSITY=5
-
 mkdir -p /run/openrc
 touch /run/openrc/softlevel
 

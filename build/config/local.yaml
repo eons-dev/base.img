@@ -11,6 +11,10 @@ next:
 		base_image: alpine
 		image_name: eons/base.img
 		image_os: alpine
+		env:
+			TZ: UTC
+			VERBOSITY: 5
+			REPO_STORE: /root/.eons/cache
 		install:
 		- bash
 		- util-linux
@@ -28,7 +32,7 @@ next:
 		- COPY inc/launch /launch
 		- RUN chmod +x /launch
 		- RUN pip install wheel; pip install emi
-		entrypoint: /launch
+		entrypoint: "bash -c '. /.env && /launch'"
 		tags: 
 		- latest
 - build: docker_publish
