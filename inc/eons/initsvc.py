@@ -36,7 +36,7 @@ class initsvc(eons.StandardFunctor):
 
 		command_args.replace('"', '\\"')
 		command_args.replace("'", "\\'")
-		command_args = f"-c '{command_args}; echo $? > /var/run/{name}.exitcode'"
+		command_args = f"-c '. /.env; rm -f /var/run/{name}.exitcode; {command_args}; echo $? > /var/run/{name}.exitcode'"
 
 		kvs = {
 			"name": name,
@@ -55,8 +55,21 @@ class initsvc(eons.StandardFunctor):
 		for key, value in kvs.items():
 			serviceFile.write(f"{key}=\"{value}\"\n")
 
+		serviceFile.write(f'''
+status() {{
+	if [ -f /var/run/{name}.exitcode ]; then
+		return $(cat /var/run/{name}.exitcode)
+	fi
+	pid=$(cat /var/run/{name}.pid)
+	if [ -z "$pid" ]; then
+		return ps -p $pid > /dev/null 2>&1
+	fi
+	return 1
+}}
+''')
+
 		if (len(dependencies)):
-			serviceFile.write("depend() {")
+			serviceFile.write("depend() {\n")
 			serviceFile.write("".join([f"\tafter {dep}\n" for dep in dependencies]))
 			serviceFile.write("}\n")
 

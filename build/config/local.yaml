@@ -32,6 +32,7 @@ next:
 		- COPY inc/launch /launch
 		- RUN chmod +x /launch
 		- RUN pip install wheel; pip install emi
+		- RUN rm -rf /etc/init.d/*; rm -rf /etc/conf.d/*
 		entrypoint: "bash -c '. /.env && /launch'"
 		tags: 
 		- latest

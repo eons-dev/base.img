@@ -42,11 +42,6 @@ error_log="/var/log/apache.err.log"
 
 We really want to try not to reinvent the wheel nor revisit old grudges. While developing this base.img, we do our best to keep in mind the goals and history of [init freedom](https://www.devuan.org/os/init-freedom).
 
-### Honorable Mentions
-
-#### Supervisor
-[Supervisor](http://supervisord.org) is the [recommended way of running multiple processes in a Docker container](https://docs.docker.com/config/containers/multi-service_container/). However, it does not currently support dependencies and is not a suitable init system for PID 1.
-
 ### EBBS Docker Launch Directive
 
 To take advantage of our init system in [EBBS](https://github.com/eons-dev/bin_ebbs), specify `launch` in the build json for your docker build step.
@@ -55,3 +50,8 @@ See the [EBBS Docker Builder](https://github.com/eons-dev/build_docker) for more
 ### EMI
 
 [EMI](https://github.com/eons-dev/bin_emi) is the Eons package manager. Since we intend to use emi in all of our projects, it is best included here. As with everything we do, emi is configurable and modular, so you can make it work for you: the way you want.
+
+### Honorable Mentions
+
+#### Supervisor
+[Supervisor](http://supervisord.org) is the [recommended way of running multiple processes in a Docker container](https://docs.docker.com/config/containers/multi-service_container/). However, it does not currently support dependencies and is not a suitable init system for PID 1.
