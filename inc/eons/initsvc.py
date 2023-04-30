@@ -57,14 +57,29 @@ class initsvc(eons.StandardFunctor):
 
 		serviceFile.write(f'''
 status() {{
+	ret=1
+	ongoing=0
 	if [ -f /var/run/{name}.exitcode ]; then
-		return $(cat /var/run/{name}.exitcode)
+		ongoing=0
+		ret=$(cat /var/run/{name}.exitcode)
 	fi
 	pid=$(cat /var/run/{name}.pid)
-	if [ -z "$pid" ]; then
-		return ps -p $pid > /dev/null 2>&1
+	if [ ! -z "$pid" ]; then
+		ongoing=1
+		kill -0 $pid > /dev/null 2>&1
+		ret=$?
 	fi
-	return 1
+
+	if [ $ret -eq 0 ]; then
+		if [ $ongoing -eq 0 ]; then
+			einfo "{name} completed successfully"
+		else
+			einfo "{name} is running"
+		fi
+	else
+		eerror "{name} CRASHED: $ret"
+	fi
+	return $ret
 }}
 ''')
 
