@@ -11,8 +11,9 @@ class initsvc(eons.StandardFunctor):
 		this.functionSucceeded = True
 		this.enableRollback = False
 
-		this.optionalKWArgs["retry_count"] = 10
-		this.optionalKWArgs["retry_wait"] = 1
+		this.optionalKWArgs["retry_count"] = 5
+		this.optionalKWArgs["retry_wait"] = 3
+		this.optionalKWArgs["always_wait"] = 1
 
 
 	def GetServiceNameFromFileName(this, file):
@@ -95,6 +96,7 @@ status() {{
 		for file in launchFiles:
 			service = this.GetServiceNameFromFileName(file)
 			this.RunCommand(f"rc-service {service} start")
+			time.sleep(this.always_wait)
 			code = -1
 			attempts = 1
 			while code != 0:
