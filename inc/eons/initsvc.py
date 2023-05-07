@@ -86,7 +86,7 @@ status() {{
 
 		if (len(dependencies)):
 			serviceFile.write("depend() {\n")
-			serviceFile.write("".join([f"\tafter {dep}\n" for dep in dependencies]))
+			serviceFile.write("".join([f"\tafter {this.GetServiceNameFromFileName(dep)}\n" for dep in dependencies]))
 			serviceFile.write("}\n")
 
 		serviceFile.close()
@@ -97,18 +97,18 @@ status() {{
 		this.WriteRCConf()
 
 		launchFiles = sorted(os.listdir("/launch.d"))
+
 		for i, file in enumerate(launchFiles):
 			dependencies = []
 			with open(f"/launch.d/{file}", "r") as f:
 				if (i):
 					dependencies.append(launchFiles[i-1])
 				this.WriteRCService(this.GetServiceNameFromFileName(file), f.read(), dependencies=dependencies)
-		
-		# maybe necessary?
-		# https://github.com/gliderlabs/docker-alpine/issues/437#issuecomment-667456518
-		this.RunCommand("rc-status")
 
-		for file in launchFiles:
+			# maybe necessary?
+			# https://github.com/gliderlabs/docker-alpine/issues/437#issuecomment-667456518
+			this.RunCommand("rc-status")
+
 			service = this.GetServiceNameFromFileName(file)
 			this.RunCommand(f"rc-service {service} start")
 			time.sleep(this.always_wait)
