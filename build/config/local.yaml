@@ -31,6 +31,7 @@ next:
 		- ADD inc/sbin /sbin
 		- COPY inc/launch /launch
 		- RUN chmod +x /launch
+		- RUN python3 -m pip config set global.break-system-packages true
 		- RUN pip install wheel; pip install emi
 		- RUN rm -rf /etc/init.d/*; rm -rf /etc/conf.d/*
 		entrypoint: "bash -c '. /.env && /launch'"
